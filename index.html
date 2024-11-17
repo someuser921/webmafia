@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Запись на игру - John's Mafia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Запись на игру</h1>
+    <p>Выберите дату игры:</p>
+    <select class="input-field" id="date-select"></select>
+
+    <p>Введите ваше имя:</p>
+    <input type="text" class="input-field" id="name-input" placeholder="Имя">
+
+    <p>Введите ваш телефон:</p>
+    <input type="text" class="input-field" id="phone-input" placeholder="Телефон">
+
+    <p>Выберите способ оплаты:</p>
+    <button class="button" onclick="payOnline()">Оплатить онлайн</button>
+    <button class="button" onclick="payOnSite()">Оплатить на месте</button>
+
+    <div id="confirmation-message"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

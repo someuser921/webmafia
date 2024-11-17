@@ -1,15 +1,19 @@
-// Загрузка дат игр через API (замените на ваш API)
+// Загрузка дат игр через API
 document.addEventListener("DOMContentLoaded", function() {
-    fetch("https://someuser921.pythonanywhere.com/api/get_dates")  // запрос к API для получения дат
+    fetch("https://someuser921.pythonanywhere.com/api/get_dates") // Убедитесь, что URL корректен
         .then(response => response.json())
         .then(dates => {
             let select = document.getElementById("date-select");
+            select.innerHTML = ""; // Очистка старых опций, если они есть
             dates.forEach(date => {
                 let option = document.createElement("option");
                 option.value = date;
                 option.textContent = date;
                 select.appendChild(option);
             });
+        })
+        .catch(error => {
+            console.error("Ошибка при загрузке дат:", error);
         });
 });
 

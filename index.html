@@ -16,12 +16,12 @@
 
         <div class="form-group">
             <label for="name-input">Введите ваше имя:</label>
-            <input type="text" class="input-field" id="name-input" placeholder="Имя" style="font-size: 16px;">
+            <input type="text" class="input-field" id="name-input" placeholder="Имя" maxlength="15" style="font-size: 16px;">
         </div>
 
         <div class="form-group">
             <label for="phone-input">Введите ваш телефон:</label>
-            <input type="tel" class="input-field" id="phone-input" placeholder="Телефон" style="font-size: 16px;" inputmode="numeric">
+            <input type="tel" class="input-field" id="phone-input" placeholder="Телефон" maxlength="11" style="font-size: 16px;" inputmode="numeric">
         </div>
 
         <div class="form-group">
@@ -31,8 +31,6 @@
                 <button class="button pay-on-site" onclick="payOnSite()">Оплатить на месте</button>
             </div>
         </div>
-
-        <div id="confirmation-message"></div>
     </div>
 
     <script src="script.js"></script>

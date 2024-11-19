@@ -22,7 +22,7 @@ const telegram_id = getUrlParameter("telegram_id");
 const telegram_nick = getUrlParameter("telegram_nick");
 
 document.addEventListener("DOMContentLoaded", function() {
-    fetch("https://your-username.pythonanywhere.com/api/get_dates")
+    fetch("https://someuser921.pythonanywhere.com/api/get_dates")
         .then(response => {
             console.log("Получен ответ на get_dates:", response); // Лог для отладки
             return response.json();
@@ -85,7 +85,7 @@ function handleRegistration(paymentMethod) {
     console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
 
     // Отправка данных о записи на сервер
-    fetch("https://your-username.pythonanywhere.com/api/register", {
+    fetch("https://someuser921.pythonanywhere.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })

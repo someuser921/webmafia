@@ -59,11 +59,12 @@ function handleRegistration(paymentMethod) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
-    .then(response => {
-        if (response.ok) {
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
             document.getElementById("confirmation-message").textContent = "Вы успешно записаны на игру!";
         } else {
-            document.getElementById("confirmation-message").textContent = "Произошла ошибка. Попробуйте еще раз.";
+            document.getElementById("confirmation-message").textContent = data.message; // Показываем сообщение об ошибке
         }
     })
     .catch(error => {
@@ -71,3 +72,4 @@ function handleRegistration(paymentMethod) {
         document.getElementById("confirmation-message").textContent = "Произошла ошибка. Попробуйте еще раз.";
     });
 }
+

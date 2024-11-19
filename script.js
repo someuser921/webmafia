@@ -22,12 +22,8 @@ const telegram_id = getUrlParameter("telegram_id");
 const telegram_nick = getUrlParameter("telegram_nick");
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM полностью загружен и разобран");
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
-        .then(response => {
-            console.log("Ответ на get_dates получен:", response);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(dates => {
             let select = document.getElementById("date-select");
             select.innerHTML = "";
@@ -39,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         })
         .catch(error => {
-            console.error("Ошибка при загрузке дат:", error);
             openModal("Ошибка при загрузке дат: " + error);
         });
 });
@@ -54,16 +49,6 @@ function validateName(name) {
 function validatePhone(phone) {
     const phonePattern = /^\d{11}$/;
     return phonePattern.test(phone);
-}
-
-// Функция для оплаты на месте
-function payOnSite() {
-    handleRegistration("on_site");
-}
-
-// Функция для оплаты онлайн
-function payOnline() {
-    handleRegistration("online");
 }
 
 // Функция для обработки регистрации
@@ -81,10 +66,13 @@ function handleRegistration(paymentMethod) {
         openModal("Введите корректный номер телефона из 11 цифр.");
         return;
     }
+
     if (!date) {
         openModal("Пожалуйста, выберите дату.");
         return;
     }
+
+    // Проверка, что telegram_id и telegram_nick получены
     if (!telegram_id || !telegram_nick) {
         openModal("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
         return;
@@ -100,8 +88,6 @@ function handleRegistration(paymentMethod) {
     .then(data => {
         if (data.status === "success") {
             openModal("Вы успешно записаны на игру!");
-        } else if (data.status === "already_registered") {
-            openModal(data.message || "Вы уже зарегистрированы на эту дату.");
         } else {
             openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
         }
@@ -109,4 +95,13 @@ function handleRegistration(paymentMethod) {
     .catch(error => {
         openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
     });
+}
+
+// Обработчики для кнопок
+function payOnline() {
+    handleRegistration("online");
+}
+
+function payOnSite() {
+    handleRegistration("on_site");
 }

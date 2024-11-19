@@ -24,22 +24,22 @@ const telegram_nick = getUrlParameter("telegram_nick");
 document.addEventListener("DOMContentLoaded", function() {
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Ошибка при загрузке дат: " + response.statusText);
-            }
+            console.log("Получен ответ на get_dates:", response); // Лог для отладки
             return response.json();
         })
         .then(dates => {
-            const select = document.getElementById("date-select");
+            let select = document.getElementById("date-select");
             select.innerHTML = "";
             dates.forEach(date => {
-                const option = document.createElement("option");
+                let option = document.createElement("option");
                 option.value = date;
                 option.textContent = date;
                 select.appendChild(option);
             });
+            console.log("Даты загружены успешно:", dates); // Отладка
         })
         .catch(error => {
+            console.error("Ошибка при загрузке дат:", error);
             openModal("Ошибка при загрузке дат: " + error);
         });
 });
@@ -77,42 +77,46 @@ function handleRegistration(paymentMethod) {
         return;
     }
 
+    // Проверка, что telegram_id и telegram_nick получены
     if (!telegram_id || !telegram_nick) {
         openModal("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
         return;
     }
 
-// Отправка данных о записи на сервер
-fetch("https://someuser921.pythonanywhere.com/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
-})
-.then(response => {
-    console.log("Ответ сервера (raw):", response); // Лог ответа сервера
-    if (!response.ok) {
-        throw new Error("Ошибка при регистрации: " + response.statusText);
-    }
-    return response.json();
-})
-.then(data => {
-    console.log("Ответ сервера (данные):", data); // Лог данных от сервера
-    if (data.status === "success") {
-        openModal("Вы успешно записаны на игру!");
-    } else {
-        openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
-    }
-})
-.catch(error => {
-    console.error("Ошибка при отправке данных:", error);
-    openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
-});
+    // Логируем отправляемые данные для отладки
+    console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
+
+    // Отправка данных о записи на сервер
+    fetch("https://someuser921.pythonanywhere.com/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
+    })
+    .then(response => {
+        console.log("Ответ сервера:", response); // Лог для отладки
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Ответ сервера (данные):", data); // Лог для отладки
+        if (data.status === "success") {
+            openModal("Вы успешно записаны на игру!");
+        } else {
+            openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
+        }
+    })
+    .catch(error => {
+        console.error("Ошибка при отправке данных:", error);
+        openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
+    });
 }
 
-function payOnline() {
-    handleRegistration("online");
-}
-
-function payOnSite() {
-    handleRegistration("on_site");
-}
+// Закрытие модального окна при нажатии на крестик
+window.onclick = function(event) {
+    const modal = document.querySelector(".modal");
+    if (event.target === modal) {
+        modal.remove();
+    }
+};

@@ -1,3 +1,12 @@
+// Функция для получения параметров из URL
+function getUrlParameter(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+}
+
+// Получение telegram_id из URL
+const telegram_id = getUrlParameter("telegram_id");
+
 // Загрузка дат игр через API
 document.addEventListener("DOMContentLoaded", function() {
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
@@ -42,7 +51,7 @@ function handleRegistration(paymentMethod) {
     fetch("https://someuser921.pythonanywhere.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, date, paymentMethod })
+        body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id })
     })
     .then(response => {
         if (response.ok) {

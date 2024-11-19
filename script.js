@@ -22,9 +22,10 @@ const telegram_id = getUrlParameter("telegram_id");
 const telegram_nick = getUrlParameter("telegram_nick");
 
 document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOM полностью загружен и разобран");
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
         .then(response => {
-            console.log("Получен ответ на get_dates:", response);
+            console.log("Ответ на get_dates получен:", response);
             return response.json();
         })
         .then(dates => {
@@ -36,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 option.textContent = date;
                 select.appendChild(option);
             });
-            console.log("Даты загружены успешно:", dates);
         })
         .catch(error => {
             console.error("Ошибка при загрузке дат:", error);
@@ -56,6 +56,16 @@ function validatePhone(phone) {
     return phonePattern.test(phone);
 }
 
+// Функция для оплаты на месте
+function payOnSite() {
+    handleRegistration("on_site");
+}
+
+// Функция для оплаты онлайн
+function payOnline() {
+    handleRegistration("online");
+}
+
 // Функция для обработки регистрации
 function handleRegistration(paymentMethod) {
     const name = document.getElementById("name-input").value.trim();
@@ -71,12 +81,10 @@ function handleRegistration(paymentMethod) {
         openModal("Введите корректный номер телефона из 11 цифр.");
         return;
     }
-
     if (!date) {
         openModal("Пожалуйста, выберите дату.");
         return;
     }
-
     if (!telegram_id || !telegram_nick) {
         openModal("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
         return;
@@ -84,20 +92,19 @@ function handleRegistration(paymentMethod) {
 
     console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
 
+    // Отправка данных о записи на сервер
     fetch("https://someuser921.pythonanywhere.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
     .then(response => {
-        console.log("Ответ сервера:", response);
         if (!response.ok) {
             throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
         }
         return response.json();
     })
     .then(data => {
-        console.log("Ответ сервера (данные):", data);
         if (data.status === "success") {
             openModal("Вы успешно записаны на игру!");
         } else {
@@ -109,11 +116,3 @@ function handleRegistration(paymentMethod) {
         openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
     });
 }
-
-// Закрытие модального окна при нажатии на крестик
-window.onclick = function(event) {
-    const modal = document.querySelector(".modal");
-    if (event.target === modal) {
-        modal.remove();
-    }
-};

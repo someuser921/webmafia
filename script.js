@@ -4,10 +4,10 @@ function getUrlParameter(name) {
     return params.get(name);
 }
 
-// Получение telegram_id из URL
+// Получение telegram_id и telegram_nick из URL
 const telegram_id = getUrlParameter("telegram_id");
+const telegram_nick = getUrlParameter("telegram_nick");
 
-// Загрузка дат игр через API
 document.addEventListener("DOMContentLoaded", function() {
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
         .then(response => response.json())
@@ -47,11 +47,17 @@ function handleRegistration(paymentMethod) {
         return;
     }
 
+    // Проверка, что telegram_id и telegram_nick получены
+    if (!telegram_id || !telegram_nick) {
+        alert("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
+        return;
+    }
+
     // Отправка данных о записи на сервер
     fetch("https://someuser921.pythonanywhere.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id })
+        body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
     .then(response => {
         if (response.ok) {

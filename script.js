@@ -82,29 +82,32 @@ function handleRegistration(paymentMethod) {
         return;
     }
 
-    // Отправка данных о записи на сервер
-    fetch("https://someuser921.pythonanywhere.com/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Ошибка при регистрации: " + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === "success") {
-            openModal("Вы успешно записаны на игру!");
-        } else {
-            openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
-        }
-    })
-    .catch(error => {
-        openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
-    });
-}
+// Отправка данных о записи на сервер
+fetch("https://someuser921.pythonanywhere.com/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
+})
+.then(response => {
+    console.log("Ответ сервера (raw):", response); // Лог ответа сервера
+    if (!response.ok) {
+        throw new Error("Ошибка при регистрации: " + response.statusText);
+    }
+    return response.json();
+})
+.then(data => {
+    console.log("Ответ сервера (данные):", data); // Лог данных от сервера
+    if (data.status === "success") {
+        openModal("Вы успешно записаны на игру!");
+    } else {
+        openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
+    }
+})
+.catch(error => {
+    console.error("Ошибка при отправке данных:", error);
+    openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
+});
+
 
 function payOnline() {
     handleRegistration("online");

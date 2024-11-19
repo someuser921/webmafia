@@ -89,6 +89,7 @@ label {
 @media (max-width: 768px) {
     .container {
         padding: 25px;
+        max-width: 800px;
         max-width: 100%; /* Убираем ограничение по ширине */
     }
 
@@ -105,8 +106,9 @@ label {
 @media (max-width: 480px) {
     .container {
         padding: 20px;
+        max-width: 900px;
         max-width: 100%; /* Убираем ограничение по ширине */
-        min-height: 80vh; /* Заставляем контейнер быть выше */
+        min-height: 180vh; /* Заставляем контейнер быть выше */
     }
 
     h1 {

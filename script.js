@@ -1,16 +1,3 @@
-// Функция для открытия модального окна
-function openModal(message) {
-    const modal = document.createElement("div");
-    modal.classList.add("modal");
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-button" onclick="this.parentElement.parentElement.remove()">&times;</span>
-            <p>${message}</p>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
 // Функция для получения параметров из URL
 function getUrlParameter(name) {
     const params = new URLSearchParams(window.location.search);
@@ -23,71 +10,48 @@ const telegram_nick = getUrlParameter("telegram_nick");
 
 document.addEventListener("DOMContentLoaded", function() {
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
-        .then(response => {
-            console.log("Получен ответ на get_dates:", response);
-            if (!response.ok) {
-                throw new Error("Ошибка при загрузке дат: " + response.statusText);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(dates => {
             let select = document.getElementById("date-select");
-            select.innerHTML = "";
+            select.innerHTML = ""; // Очистка старых опций, если они есть
             dates.forEach(date => {
                 let option = document.createElement("option");
                 option.value = date;
                 option.textContent = date;
                 select.appendChild(option);
             });
-            console.log("Даты загружены успешно");
         })
         .catch(error => {
             console.error("Ошибка при загрузке дат:", error);
-            openModal("Ошибка при загрузке дат: " + error);
         });
 });
 
-// Функция для валидации имени
-function validateName(name) {
-    const namePattern = /^[а-яА-ЯёЁ\s]+$/;
-    return namePattern.test(name) && name.length <= 15;
+// Обработчик для кнопки "Оплатить онлайн"
+function payOnline() {
+    handleRegistration("online");
 }
 
-// Функция для валидации телефона
-function validatePhone(phone) {
-    const phonePattern = /^\d{11}$/;
-    return phonePattern.test(phone);
+// Обработчик для кнопки "Оплатить на месте"
+function payOnSite() {
+    handleRegistration("on_site");
 }
 
 // Функция для обработки регистрации
 function handleRegistration(paymentMethod) {
-    const name = document.getElementById("name-input").value.trim();
-    const phone = document.getElementById("phone-input").value.trim();
+    const name = document.getElementById("name-input").value;
+    const phone = document.getElementById("phone-input").value;
     const date = document.getElementById("date-select").value;
 
-    // Валидация данных
-    if (!validateName(name)) {
-        openModal("Введите корректное имя на кириллице, до 15 символов.");
-        return;
-    }
-    if (!validatePhone(phone)) {
-        openModal("Введите корректный номер телефона из 11 цифр.");
-        return;
-    }
-
-    if (!date) {
-        openModal("Пожалуйста, выберите дату.");
+    if (!name || !phone || !date) {
+        alert("Пожалуйста, заполните все поля!");
         return;
     }
 
     // Проверка, что telegram_id и telegram_nick получены
     if (!telegram_id || !telegram_nick) {
-        openModal("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
+        alert("Ошибка: Не удалось получить идентификатор Telegram. Перезапустите мини-приложение.");
         return;
     }
-
-    // Логируем отправляемые данные для отладки
-    console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
 
     // Отправка данных о записи на сервер
     fetch("https://someuser921.pythonanywhere.com/api/register", {
@@ -96,30 +60,14 @@ function handleRegistration(paymentMethod) {
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
     .then(response => {
-        console.log("Ответ сервера:", response);
-        if (!response.ok) {
-            throw new Error("Ошибка при регистрации: " + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Ответ сервера (данные):", data);
-        if (data.status === "success") {
-            openModal("Вы успешно записаны на игру!");
+        if (response.ok) {
+            document.getElementById("confirmation-message").textContent = "Вы успешно записаны на игру!";
         } else {
-            openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
+            document.getElementById("confirmation-message").textContent = "Произошла ошибка. Попробуйте еще раз.";
         }
     })
     .catch(error => {
         console.error("Ошибка при отправке данных:", error);
-        openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
+        document.getElementById("confirmation-message").textContent = "Произошла ошибка. Попробуйте еще раз.";
     });
 }
-
-// Закрытие модального окна при нажатии на крестик
-window.onclick = function(event) {
-    const modal = document.querySelector(".modal");
-    if (event.target === modal) {
-        modal.remove();
-    }
-};

@@ -89,12 +89,12 @@ function handleRegistration(paymentMethod) {
         if (data.status === "success") {
             openModal("Вы успешно записаны на игру!");
         } else {
-            openModal(data.message); // Показываем сообщение об ошибке
+            openModal(data.message || "Произошла ошибка. Попробуйте еще раз."); // Показываем сообщение об ошибке
         }
     })
     .catch(error => {
         console.error("Ошибка при отправке данных:", error);
-        openModal("Произошла ошибка. Попробуйте еще раз.");
+        openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
     });
 }
 

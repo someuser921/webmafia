@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch("https://someuser921.pythonanywhere.com/api/get_dates")
         .then(response => {
             console.log("Получен ответ на get_dates:", response); // Лог для отладки
+            alert("Ответ на get_dates получен"); // Отладка
             return response.json();
         })
         .then(dates => {
@@ -36,9 +37,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 option.textContent = date;
                 select.appendChild(option);
             });
+            alert("Даты загружены успешно"); // Отладка
         })
         .catch(error => {
             console.error("Ошибка при загрузке дат:", error);
+            openModal("Ошибка при загрузке дат: " + error);
         });
 });
 
@@ -83,6 +86,7 @@ function handleRegistration(paymentMethod) {
 
     // Логируем отправляемые данные для отладки
     console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
+    alert("Отправка данных на сервер: " + JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })); // Отладка
 
     // Отправка данных о записи на сервер
     fetch("https://someuser921.pythonanywhere.com/api/register", {
@@ -90,9 +94,12 @@ function handleRegistration(paymentMethod) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log("Ответ сервера:", response); // Лог для отладки
+        return response.json();
+    })
     .then(data => {
-        console.log("Ответ сервера:", data); // Лог для отладки
+        console.log("Ответ сервера (данные):", data); // Лог для отладки
         if (data.status === "success") {
             openModal("Вы успешно записаны на игру!");
         } else {

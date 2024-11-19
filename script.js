@@ -90,29 +90,23 @@ function handleRegistration(paymentMethod) {
         return;
     }
 
-    console.log("Отправка данных на сервер:", { name, phone, date, paymentMethod, telegram_id, telegram_nick });
-
     // Отправка данных о записи на сервер
     fetch("https://someuser921.pythonanywhere.com/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, date, paymentMethod, telegram_id, telegram_nick })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
             openModal("Вы успешно записаны на игру!");
+        } else if (data.status === "already_registered") {
+            openModal(data.message || "Вы уже зарегистрированы на эту дату.");
         } else {
             openModal(data.message || "Произошла ошибка. Попробуйте еще раз.");
         }
     })
     .catch(error => {
-        console.error("Ошибка при отправке данных:", error);
         openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
     });
 }

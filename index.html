@@ -5,21 +5,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Запись на игру</h1>
-    <p>Выберите дату игры:</p>
-    <select class="input-field" id="date-select"></select>
+    <div class="container">
+        <h1>Запись на игру</h1>
 
-    <p>Введите ваше имя:</p>
-    <input type="text" class="input-field" id="name-input" placeholder="Имя">
+        <div class="form-group">
+            <label for="date-select">Выберите дату игры:</label>
+            <select class="input-field" id="date-select"></select>
+        </div>
 
-    <p>Введите ваш телефон:</p>
-    <input type="text" class="input-field" id="phone-input" placeholder="Телефон">
+        <div class="form-group">
+            <label for="name-input">Введите ваше имя:</label>
+            <input type="text" class="input-field" id="name-input" placeholder="Имя">
+        </div>
 
-    <p>Выберите способ оплаты:</p>
-    <button class="button" onclick="payOnline()">Оплатить онлайн</button>
-    <button class="button" onclick="payOnSite()">Оплатить на месте</button>
+        <div class="form-group">
+            <label for="phone-input">Введите ваш телефон:</label>
+            <input type="text" class="input-field" id="phone-input" placeholder="Телефон">
+        </div>
 
-    <div id="confirmation-message"></div>
+        <div class="form-group">
+            <label>Выберите способ оплаты:</label>
+            <div class="button-group">
+                <button class="button pay-online" onclick="payOnline()">Оплатить онлайн</button>
+                <button class="button pay-on-site" onclick="payOnSite()">Оплатить на месте</button>
+            </div>
+        </div>
+
+        <div id="confirmation-message"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -106,7 +106,8 @@ fetch("https://someuser921.pythonanywhere.com/api/register", {
 .catch(error => {
     console.error("Ошибка при отправке данных:", error);
     openModal("Произошла ошибка при соединении с сервером. Попробуйте еще раз.");
-})
+});
+}
 
 function payOnline() {
     handleRegistration("online");

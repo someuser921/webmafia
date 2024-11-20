@@ -41,13 +41,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // 
 document.addEventListener("click", function (event) {
-    // Если кликнули на пустое место (не на input, button или select)
-    if (!event.target.closest(".input-field") && !event.target.closest("button")) {
-        // Убираем фокус с активного элемента
-        const activeElement = document.activeElement;
-        if (activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "SELECT")) {
-            activeElement.blur();
-        }
+    const isInput = event.target.closest(".input-field");
+    const isButton = event.target.closest("button");
+
+    // Снимаем фокус, если кликнули не на поле ввода и не на кнопку
+    if (!isInput && !isButton) {
+        document.activeElement.blur();
     }
 });
 
